@@ -1,0 +1,64 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://raw.githubusercontent.com/nf-core/testpipeline/master/nextflow_schema.json",
+    "title": "nexomis/{{pipeline name}} pipeline parameters",
+    "description": "{{pipeline description}}",
+    "type": "object",
+    "defs": {
+        "input_output_options": {
+            "title": "Input/output options",
+            "type": "object",
+            "description": "Define where the pipeline should find input data and save output data.",
+            "required": ["input_dir", "output_dir"],
+            "properties": {
+                "input_dir": {
+                    "type": "string",
+                    "format": "directory-path",
+                    "exists": true, 
+                    "description": "The input directory with sequence files. Spring files will be decompressed."
+                },
+                "output_dir": {
+                    "type": "string",
+                    "format": "directory-path",
+                    "description": "The output directory where the results will be saved. You have to use absolute paths to storage on Cloud infrastructure."
+                },
+                "publish_dir_mode": {
+                    "type": "string",
+                    "description": "PublishDir mode for process",
+                    "default": "link"
+                }
+            }
+        },
+        "resources_options": {
+            "title": "Resources options",
+            "type": "object",
+            "description": "Define The default resources for nextflow",
+            "required": ["input_dir", "output_dir"],
+            "properties": {
+                "ncpus_low": {
+                    "type": "integer",
+                    "default": 4,
+                    "description": "Number of cpu for low process."
+                },
+                "ncpus_med": {
+                    "type": "integer",
+                    "default": 8,
+                    "description": "Number of cpu for medium process."
+                },
+                "ncpus_high": {
+                    "type": "integer",
+                    "default": 16,
+                    "description": "Number of cpu for high process."
+                }
+            }
+        }
+    },
+    "allOf": [
+        {
+            "$ref": "#/defs/input_output_options"
+        },
+        {
+            "$ref": "#/defs/resources_options"
+        }
+    ]
+}
