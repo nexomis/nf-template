@@ -38,7 +38,7 @@ The `help` will be managed by `plugin/nf-schema`:
 
 Except in very rare cases where no existing process or subworkflow calls are made, and where no creation of processes or subworkflows is relevant, the following conventions should be followed.
 
-### `modules/` Structure
+### Structure of `modules/
 Since `include` works only at the repository level, modules will be linked in the `modules` folder (to avoid file duplication and prevent incompatibility issues during module updates).
 
 ```sh
@@ -55,7 +55,7 @@ For each modularized element (subworkflow or subprocess), place it in a folder n
 
   - Tag processes with labels present in `modules/config/process/labels.config` and update if necessary.
 
-  - To easily adapt (without multiplying module versions) the publication of `processes` and `subworkflows` (not the case for `workflows`) specifically to each workflow, centralize publication operations in the `conf/publish.config` file.
+  - To easily adapt (without multiplying module versions) the publication of `processes` and `subworkflows` (not the case for `workflows`) specifically to each workflow, centralize publication operations in the `conf/publish.config` file.  
 **Note:** how to target a specific call of a process or subworkflow using, for example, task.id?
 
   - Do not directly call parameters (`params`) in processes and sub-workflows: processes and sub-workflows should not directly depend on global parameters. Use channels to pass parameter values in workflows: aggregate parameters into channels at the main workflow level, then pass these channels to processes and sub-workflows as inputs.
