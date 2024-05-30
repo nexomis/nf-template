@@ -55,10 +55,12 @@ For each modularized element (subworkflow or subprocess), place it in a folder n
 
   - Tag processes with labels present in `modules/config/process/labels.config` and update if necessary.
 
-  - To easily adapt (without multiplying module versions) the publication of `processes` and `subworkflows` (not the case for `workflows`) specifically to each workflow, centralize publication operations in the `conf/publish.config` file.  
-**Note:** how to target a specific call of a process or subworkflow using, for example, task.id?
+  - To easily adapt (without multiplying module versions) the publication of `processes` and `subworkflows` (not the case for `workflows`) specifically to each workflow, centralize publication operations in the `conf/publish.conf` file.  
+**Note:** to target a specific call of a process or subworkflow they must be imported with an unique name. In all cases a process (or subworkflow) can't be call twices with the same name.
 
   - Do not directly call parameters (`params`) in processes and sub-workflows: processes and sub-workflows should not directly depend on global parameters. Use channels to pass parameter values in workflows: aggregate parameters into channels at the main workflow level, then pass these channels to processes and sub-workflows as inputs.
+
+  - In order to pass arguments to specific functions use `conf/ext.conf`, those arguments can then be access directly in the subworkflows or processes by calling `task.ext.args`.
 
 ## Notations
 
