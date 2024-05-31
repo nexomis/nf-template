@@ -1,6 +1,6 @@
 #!/usr/bin/env nextflow
 
-include { validateParameters; paramsHelp; paramsSummaryLog; samplesheetToList } from 'plugin/nf-schema'
+include { validateParameters; paramsHelp; paramsSummaryLog } from 'plugin/nf-validation'
 
 log.info """
     |            #################################################
@@ -16,7 +16,7 @@ log.info """
     |""".stripMargin()
 
 if (params.help) {
-  log.info paramsHelp("nextflow run nexomis/{{pipeline name}} {{typical required usage}}")
+  log.info paramsHelp("nextflow run nexomis/{{pipeline name}} [args]")
   exit 0
 }
 validateParameters()

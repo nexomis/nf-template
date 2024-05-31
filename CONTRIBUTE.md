@@ -1,9 +1,12 @@
-# Nextflow coding conventions
+# Nextflow pipeline conventions at Nexomis
 
 ## Workflow file structure
 ```
 .
 └── <worflow_name>/
+    ├── conf/
+    │   ├-- ext.conf
+    │   ├-- publish.conf
     ├── modules/
     │   ├-- config/
     │   │   ├── process/
@@ -19,7 +22,8 @@
     │           └── main.tf
     ├── main.nf
     ├── nextflow.config
-    └── nextflow_schema.json
+    ├── nextflow_schema.json
+    └── Readme.md
 ```
 
 ## Help
@@ -67,3 +71,5 @@ For each modularized element (subworkflow or subprocess), place it in a folder n
   - **Reads:** in every workflow, reads will be defined as a tuple with the following structure: `(sample_name, [path(s)_to_file(s)])`
 
   - **Typography:** process and workflow names will be written in capital letters: `workflow MY_WF {}`, `process MY_PROCESS {}`.
+
+
