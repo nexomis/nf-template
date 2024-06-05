@@ -28,7 +28,7 @@
             "title": "Resources options",
             "type": "object",
             "description": "Define The default resources for nextflow",
-            "required": ["input_dir", "output_dir"],
+            "required": ["input_dir", "out_dir"],
             "properties": {
                 "ncpus_low": {
                     "type": "integer",
