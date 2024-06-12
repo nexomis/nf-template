@@ -1,26 +1,21 @@
 {
-    "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "$id": "https://raw.githubusercontent.com/nf-core/testpipeline/master/nextflow_schema.json",
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "https://raw.githubusercontent.com/nexomis/{{pipeline name}}/master/nextflow_schema.json",
     "title": "nexomis/{{pipeline name}} pipeline parameters",
     "description": "{{pipeline description}}",
     "type": "object",
-    "defs": {
+    "definitions": {
         "input_output_options": {
             "title": "Input/output options",
             "type": "object",
             "description": "Define where the pipeline should find input data and save output data.",
-            "required": ["input_dir", "output_dir"],
+            "required": ["out_dir"],
             "properties": {
-                "input_dir": {
+                "out_dir": {
                     "type": "string",
                     "format": "directory-path",
-                    "exists": true, 
-                    "description": "The input directory with sequence files. Spring files will be decompressed."
-                },
-                "output_dir": {
-                    "type": "string",
-                    "format": "directory-path",
-                    "description": "The output directory where the results will be saved. You have to use absolute paths to storage on Cloud infrastructure."
+                    "description": "The output directory where the results will be saved.",
+                    "default": "out_dir"
                 },
                 "publish_dir_mode": {
                     "type": "string",
@@ -33,7 +28,7 @@
             "title": "Resources options",
             "type": "object",
             "description": "Define The default resources for nextflow",
-            "required": ["input_dir", "output_dir"],
+            "required": ["input_dir", "out_dir"],
             "properties": {
                 "ncpus_low": {
                     "type": "integer",
@@ -55,10 +50,10 @@
     },
     "allOf": [
         {
-            "$ref": "#/defs/input_output_options"
+            "$ref": "#/definitions/input_output_options"
         },
         {
-            "$ref": "#/defs/resources_options"
+            "$ref": "#/definitions/resources_options"
         }
     ]
 }
