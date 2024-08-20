@@ -72,4 +72,18 @@ For each modularized element (subworkflow or subprocess), place it in a folder n
 
   - **Typography:** process and workflow names will be written in capital letters: `workflow MY_WF {}`, `process MY_PROCESS {}`.
 
+## Conventions
+
+### Avoid mv and copy for outputs
+
+`mv` and `cp` are heavy operation on network/cloud storage on HPC infra, therefore prefer using the `StageAs` option: https://www.nextflow.io/docs/latest/process.html#output-type-path
+
+### Manage memory for complex tool from args
+
+TODO : Manage tool memory with conf/resources.conf https://github.com/nexomis/rna-preprocessing/blob/main/conf/resources.conf
+
+### Managing tool args in wf
+
+Manage tool args from conf (task.ext) `fastp --thread $task.cpus ${task.ext.args ?: default_args} \\` https://github.com/nexomis/nf-process/blob/fc42479b5bc0e1bc3631c3446d47b4f068df554b/fastp/main.nf
+
 
