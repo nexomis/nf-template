@@ -68,13 +68,24 @@ For each modularized element (subworkflow or subprocess), place it in a folder n
 
 ## Notations
 
-  - **Reads:** in every workflow, reads will be defined as a tuple with the structure described [below](#Queue_channel_for_path)
+  - **Reads:** in every workflow, reads will be defined as a tuple with the structure described [below](#queue-channel-for-path)
 
   - **Typography:** process and workflow names will be written in capital letters: `workflow MY_WF {}`, `process MY_PROCESS {}`.
+
+## Input filse/directories by sample
+
+When input files or directories need to be associated with specific samples in a run, it is recommended to use sample sheets. If the same input file or directory is referenced by multiple samples, Nextflow typically handles this with symbolic links rather than physically duplicating the files. However, this can still lead to redundant processing of the same file in different tasks, which can slow down the workflow.
+
+To avoid this redundancy, it is advisable to use dedicated sample sheets for managing input files/directories without repeating processing. In these dedicated sample sheets, each input file or directory will be associated with a unique ID. This ID will then be used in the main sample sheet to reference the sample, instead of specifying the file/directory path directly.
+
+This approach ensures that input files/directories are processed only once, even when linked to multiple samples.
+
+Note: The sample sheets should be placed in the assets/ directory.
 
 ## Conventions
 
 ### Queue channel for path
+
 *Unless a particular case where this is not relevant,* Queue channel paths will be transmitted and retrieved in the format `tuple val(meta), path(file/dir)` where `meta` being a dictionary containing at least the element identifier in `meta.id` (essential for reordering different channels together).
 
 ### Avoid mv and copy for outputs
@@ -89,4 +100,8 @@ TODO : Manage tool memory with conf/resources.conf https://github.com/nexomis/rn
 
 Manage tool args from conf (task.ext) `fastp --thread $task.cpus ${task.ext.args ?: default_args} \\` https://github.com/nexomis/nf-process/blob/fc42479b5bc0e1bc3631c3446d47b4f068df554b/fastp/main.nf
 
-
+## Other Recommandation
+ - Although not a strict requirement, it is preferable that a workflow has only one queue channel as input, and that it be the first argument. If necessary, queue channels should be merged into tuples.
+ - To ensure that a process can be reused in other workflows, if in doubt, don't hesitate to emit more output than necessary.
+ - `out_dir` ?
+ - `SaveAs` on `publishDir` ?
