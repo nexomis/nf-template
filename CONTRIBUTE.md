@@ -64,15 +64,18 @@ For each modularized element (subworkflow or subprocess), place it in a folder n
 
   - Do not directly call parameters (`params`) in processes and sub-workflows: processes and sub-workflows should not directly depend on global parameters. Use channels to pass parameter values in workflows: aggregate parameters into channels at the main workflow level, then pass these channels to processes and sub-workflows as inputs.
 
-  - In order to pass arguments to specific functions use `conf/ext.conf`, those arguments can then be access directly in the subworkflows or processes by calling `task.ext.args`.
+  - In order to pass arguments to specific functions use `conf/ext.conf`, those arguments can then be access directly in the subworkflows or processes by calling `task.ext.args`. Preferably, for specific arguments named `xxx`, use `ext.args_xxx` if it's a command line argument to be included as it is in the command line, otherwise use `ext.xxx` (e.g: `ext.force="true"` will be incorporated into the command line as follows: `script.sh --force ${task.ext.force}` and `ext.args_force="--force true"` which will be incorporated into the command line as follows: `script.sh ${task.ext.args_force}`).
 
 ## Notations
 
-  - **Reads:** in every workflow, reads will be defined as a tuple with the following structure: `(sample_name, [path(s)_to_file(s)])`
+  - **Reads:** in every workflow, reads will be defined as a tuple with the structure described [below](#Queue_channel_for_path)
 
   - **Typography:** process and workflow names will be written in capital letters: `workflow MY_WF {}`, `process MY_PROCESS {}`.
 
 ## Conventions
+
+### Queue channel for path
+*Unless a particular case where this is not relevant,* Queue channel paths will be transmitted and retrieved in the format `tuple val(meta), path(file/dir)` where `meta` being a dictionary containing at least the element identifier in `meta.id` (essential for reordering different channels together).
 
 ### Avoid mv and copy for outputs
 
