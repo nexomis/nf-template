@@ -8,7 +8,7 @@
     │   ├── ext.conf
     │   ├── publish.conf
     │   └── resources.conf           (*)
-    ├── assets/
+    ├── assets/                      (*)
     │   └── input_schema.json        (*)
     ├── modules/
     │   ├-- config/
