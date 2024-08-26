@@ -5,8 +5,11 @@
 .
 └── <worflow_name>/
     ├── conf/
-    │   ├-- ext.conf
-    │   ├-- publish.conf
+    │   ├── ext.conf
+    │   ├── publish.conf
+    │   └── resources.conf           (*)
+    ├── assets/
+    │   └── input_schema.json        (*)
     ├── modules/
     │   ├-- config/
     │   │   ├── process/
@@ -24,6 +27,9 @@
     ├── nextflow.config
     ├── nextflow_schema.json
     └── Readme.md
+
+  '--'  : submodule
+  '(*)' : optional
 ```
 
 ## Help
@@ -72,7 +78,7 @@ For each modularized element (subworkflow or subprocess), place it in a folder n
 
   - **Typography:** process and workflow names will be written in capital letters: `workflow MY_WF {}`, `process MY_PROCESS {}`.
 
-## Input filse/directories by sample
+## Input files/directories by sample
 
 When input files or directories need to be associated with specific samples in a run, it is recommended to use sample sheets. If the same input file or directory is referenced by multiple samples, Nextflow typically handles this with symbolic links rather than physically duplicating the files. However, this can still lead to redundant processing of the same file in different tasks, which can slow down the workflow.
 
