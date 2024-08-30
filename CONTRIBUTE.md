@@ -82,7 +82,7 @@ To easily adapt (without multiplying module versions) the publication of `proces
 
 #### 4.4 Global Parameters only in main worflows
 Do not directly call parameters (`params`) in processes or sub-workflows: processes and sub-workflows should not directly depend on global parameters. Use channels to pass parameter values in workflows: aggregate parameters into channels at the main workflow level, then pass these channels to processes and sub-workflows as inputs.
-For steps that need to be skipped (usually `params.skip_xxxxx`), use branches on input channels or pass them through sub-workflow input parameters (e.g., a list of steps to skip).
+For steps that need to be skipped (usually `params.skip_xxxxx`), use branches on input channels (usefull to manage it by sample) or pass them through sub-workflow input parameters (e.g., a list of steps to skip).
 
 #### 4.5 Typography
 #### 4.5.1 Channel Instance
