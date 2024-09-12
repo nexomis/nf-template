@@ -44,6 +44,21 @@
                     "type": "integer",
                     "default": 16,
                     "description": "Number of cpu for high process."
+                },
+                "mem_low": {
+                    "type": "integer",
+                    "default": 15,
+                    "description": "Memory for low process."
+                },
+                "mem_med": {
+                    "type": "integer",
+                    "default": 30,
+                    "description": "Memory for med process"
+                },
+                "mem_high": {
+                    "type": "integer",
+                    "default": 120,
+                    "description": "Memory for high process (eg. 'samtools sort', 'bowtie2', ...)."
                 }
             }
         }
