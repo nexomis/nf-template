@@ -59,12 +59,14 @@ Objectives:
 - Use `nf-validation@1.1.3` for managing help documentation:
   - **Include** in `main.nf` (refer tothe  template).
   - Create `nextflow_schema.json` based on the parameters in the `params{}` section of `nextflow.config`.
-Example  [here](./nextflow_schema.json)
+
+**Example** in [nextflow_schema.json](./nextflow_schema.json)
 
 - Use `params.out_dir` to define the output directory. This aligns with the default `out_dir` used in EPI2ME workflows but differs from nf-core.
 - Define resource parameters in the `resources_options` section, matching `modules/config/process/labels.config`.
 - Manage tool parameterization logic in `./conf/ext.conf`.
-Example in [.conf/ext.conf](./conf/ext.conf)
+
+**Example** in [.conf/ext.conf](./conf/ext.conf)
 
 - **Note**: The plugin `nf-schema` is not compatible with EPI2ME because of its updated JSON schema.
 
@@ -73,7 +75,8 @@ Example in [.conf/ext.conf](./conf/ext.conf)
 - **Avoid** using `bin` in modules, as it needs to be defined at the pipeline level. 
 - **Avoid** unsing modules binaries unless asolutely required, since it necessitates setting `nextflow.enable.moduleBinaries = true` in the main pipeline. See [Nextflow documentation on module binaries](https://www.nextflow.io/docs/latest/module.html#module-binaries)
 - **Prefer** using templating in `templates`  which should be located alongside the module script `main.nf`.
-Example:
+
+**Example:**
 ```
   script:
   template "split_fasta_per_sequence.py"
@@ -90,7 +93,7 @@ Example:
   
 **NOTE:** Some configuration settings can be overridden by the `-c` option in Nextflow.
 
-Example in `nextflow.config`:
+**Example** in `nextflow.config`:
 ```
 includeConfig "modules/config/process/labels.config"
 includeConfig "modules/config/profiles.config"
@@ -102,13 +105,15 @@ includeConfig "conf/ressources.config"
 ## 4. Modules
 
 - Use modules to avoid duplication and maintain compatibility during updates:
-  - Link modules in the modules folder:
+- Link modules in the modules folder:
+
 ```sh
 mkdir modules
 git submodule add https://github.com/nexomis/nf-subworkflows.git modules/subworkflows
 git submodule add https://github.com/nexomis/nf-config.git modules/config
 git submodule add https://github.com/nexomis/nf-process.git modules/process
 ```
+
 **NOTE:** Submodules are linked to a repository by their hash reference. To update them, you need to pull/push the changes again.
 
 ### 4.1 Process
@@ -116,7 +121,7 @@ git submodule add https://github.com/nexomis/nf-process.git modules/process
 - **Refer** to [nf-process guidelines](https://github.com/nexomis/nf-process/blob/main/README.md) rules and conventions regarding process.
 - **Unique naming:** When including processes multiple times, ensure they have unique names to prevent conflicts.
 
-Example:
+**Example:**
 ```
 include { GZ as GZ1; GZ as GZ2; GZ as GZ3 } from '../../../process/gz/main.nf'
 ```
@@ -128,7 +133,7 @@ include { GZ as GZ1; GZ as GZ2; GZ as GZ3 } from '../../../process/gz/main.nf'
   - Prefer a single queue channel as input for subworkflows. Merge inputs into tuples if necessary.
   - Include `null` values to handle optional inputs.
 
-Example in pipeline:
+**Example in pipeline:**
 ```
   trimmedInputs
   | map {
@@ -141,7 +146,7 @@ Example in pipeline:
   VIRAL_ASSEMBLY(inputsForViralAssembly)
 ```
 
-Example in subworkflow:
+**Example in subworkflow:**
 ```
   take:
   inputs // (id, [meta, reads], [meta, k2_index], [meta, inputRefgenome])
@@ -155,7 +160,8 @@ Example in subworkflow:
 - **Maximize the outputs Channels:** Ensure subworkflows emit as many useful output channels as possible.
 - **Avoid Global Parameters:** Do not use global parameters (`params`) directly in processes or subworkflows (e.g., `params.skip_step`).
 - **Use `meta` Attributes:** Implement optional steps using `meta` attributes.
-Example 1:
+
+**Example 1:**
 ```
   inputReadsFromK3
   | map {it[1]}
@@ -170,7 +176,8 @@ Example 1:
   SPADES.out.scaffolds
   | set { scaffolds }
 ```
-Example 2:
+
+**Example 2:**
 ```
   finalScaffolds
   | filter { it[0].realign == "yes" }
@@ -206,14 +213,16 @@ joinInputForK2i1 = inputReads.join(inputK2i1, by:0)
 - Use sample sheets to manage input files/directories associated with samples:
 - Utilize **unique IDs** in dedicated sample sheets to reference input files/directories in the main sample sheet, preventing redundant processing.
 - Place sample sheets in the `assets/` directory. 
-Example in [assets/input_schema.json](./assets/input_schema.json)
+
+**Example** in [assets/input_schema.json](./assets/input_schema.json)
 
 ## 7. Publishing files
 
 - Use `workflow` `publish` section and `output` to publish files from channels.
 - Subworkflow shall emits channels to be published
 - Use the `enabled` attribute for optional publishing.
-Example:
+
+**Example:**
 ```
   publish:
   PRIMARY_FROM_DIR.out.trimmed >> 'fastp'
