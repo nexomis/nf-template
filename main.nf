@@ -1,5 +1,5 @@
 #!/usr/bin/env nextflow
-
+nextflow.preview.output = true
 include { validateParameters; paramsHelp; paramsSummaryLog } from 'plugin/nf-validation'
 
 log.info """
@@ -28,6 +28,5 @@ workflow {
 Define workflow here
 To access to a parameter (default or mandatory) call param.name_param
 */
-
 
 }
