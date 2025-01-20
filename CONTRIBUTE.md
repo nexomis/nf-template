@@ -57,12 +57,11 @@ Objectives:
 ## 1. Help Documentation and Parameters
 
 - Use `nf-validation@1.1.3` for managing help documentation:
-  - **Include** in `main.nf` (refer tothe  template).
+  - **Include** in `main.nf` (refer to the template).
   - Create `nextflow_schema.json` based on the parameters in the `params{}` section of `nextflow.config`.
 
 **Example** in [nextflow_schema.json](./nextflow_schema.json)
 
-- Use `params.out_dir` to define the output directory. This aligns with the default `out_dir` used in EPI2ME workflows but differs from nf-core.
 - Define resource parameters in the `resources_options` section, matching `modules/config/process/labels.config`.
 - Manage tool parameterization logic in `./conf/ext.conf`.
 
@@ -73,7 +72,7 @@ Objectives:
 ## 2. Custom scripts and templates
 
 - **Avoid** using `bin` in modules, as it needs to be defined at the pipeline level. 
-- **Avoid** unsing modules binaries unless asolutely required, since it necessitates setting `nextflow.enable.moduleBinaries = true` in the main pipeline. See [Nextflow documentation on module binaries](https://www.nextflow.io/docs/latest/module.html#module-binaries)
+- **Avoid** using modules binaries unless absolutely required, since it necessitates setting `nextflow.enable.moduleBinaries = true` in the main pipeline. See [Nextflow documentation on module binaries](https://www.nextflow.io/docs/latest/module.html#module-binaries)
 - **Prefer** using templating in `templates`  which should be located alongside the module script `main.nf`.
 
 **Example:**
@@ -216,30 +215,67 @@ joinInputForK2i1 = inputReads.join(inputK2i1, by:0)
 
 **Example** in [assets/input_schema.json](./assets/input_schema.json)
 
-## 7. Publishing files
+## 7. Publishing outputs
 
-- Use `workflow` `publish` section and `output` to publish files from channels.
-- Subworkflow shall emits channels to be published
-- Use the `enabled` attribute for optional publishing.
+- Use workflow `publish` section to publish outputs from channels
+- Subworkflows shall emit channels to be published
+- Configure output directory using `-output-dir` CLI option (defaults to 'results')
+- Use `output` block to customize publish targets
+- Avoid using publishDir directive in processes
 
 **Example:**
-```
-  publish:
-  PRIMARY_FROM_DIR.out.trimmed >> 'fastp'
-  PRIMARY_FROM_DIR.out.fastqc_trim_html >> 'fastqc_trim'
-  PRIMARY_FROM_DIR.out.fastqc_raw_html >> 'fastqc_raw'
-  PRIMARY_FROM_DIR.out.multiqc_html >> 'multiqc'
+```nextflow
+// main.nf
+workflow {
+    main:
+    PRIMARY_FROM_DIR(data)
 
+    publish:
+    PRIMARY_FROM_DIR.out.trimmed >> 'fastp'
+    PRIMARY_FROM_DIR.out.fastqc_trim_html >> 'fastqc_trim' 
+    PRIMARY_FROM_DIR.out.fastqc_raw_html >> 'fastqc_raw'
+    PRIMARY_FROM_DIR.out.multiqc_html >> 'multiqc'
 }
 
 output {
-    directory "${params.out_dir}"
+    // Basic target configuration
     'fastp' {
-        mode params.publish_dir_mode
         enabled params.save_fastp
+        mode 'copy'  // instead of symlink
+    }
+
+    // Custom path within output directory 
+    'fastqc_trim' {
+        path 'qc/fastqc/trimmed'
+    }
+
+    // Dynamic path based on metadata
+    'fastqc_raw' {
+        path { meta, html -> "qc/fastqc/raw/${meta.id}" }
+    }
+
+    // Index file to preserve metadata
+    'multiqc' {
+        enabled params.save_multiqc
+        mode params.multiqc_mode
+        index {
+            path 'index.csv'
+            header true
+        }
     }
 }
 ```
+
+**Available output directives:**
+- `enabled`: Enable/disable publishing for this target
+- `mode`: Publishing mode ('symlink', 'copy', 'move', 'link', 'rellink', 'copyNoFollow')
+- `path`: Custom path within output directory (string or closure)
+- `overwrite`: Allow overwriting existing files
+- `index`: Create an index file of published values (CSV or JSON)
+  - `path`: Index file path (required)
+  - `header`: Use first record keys as column names (CSV only)
+  - `sep`: Value separator character (CSV only)
+  - `mapper`: Transform values before writing
 
 ## 8. Testing
 
@@ -251,4 +287,4 @@ nextflow run . -params-file data/test/test.yml
 - Set up testing parameters in `data/test/test.yml`
 - Provide testing inputs in `data/test/inputs/`
   - Optionally, include a script to download input test data (e.g., `get_test_data.sh`).
-- Test outputs shall be found in `data/test/out_dir`
+- Test outputs shall be found in `results` by default, or as specified by `-output-dir` CLI option
