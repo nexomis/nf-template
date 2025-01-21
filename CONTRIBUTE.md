@@ -219,7 +219,7 @@ joinInputForK2i1 = inputReads.join(inputK2i1, by:0)
 
 - Use workflow `publish` section to publish outputs from channels
 - Subworkflows shall emit channels to be published
-- Configure output directory using `-output-dir` CLI option (defaults to 'results')
+- Configure output directory using `--out_dir` parameter (required)
 - Use `output` block to customize publish targets
 - Avoid using publishDir directive in processes
 
@@ -287,4 +287,4 @@ nextflow run . -params-file data/test/test.yml
 - Set up testing parameters in `data/test/test.yml`
 - Provide testing inputs in `data/test/inputs/`
   - Optionally, include a script to download input test data (e.g., `get_test_data.sh`).
-- Test outputs shall be found in `results` by default, or as specified by `-output-dir` CLI option
+- Test outputs shall be found in the directory specified by `out_dir: data/test/out_dir` parameter specified in `data/test/test.yml`.
