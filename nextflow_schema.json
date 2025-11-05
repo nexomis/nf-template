@@ -1,19 +1,19 @@
 {
-    "$schema": "http://json-schema.org/draft-07/schema",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
     "$id": "https://raw.githubusercontent.com/nexomis/{{pipeline name}}/master/nextflow_schema.json",
     "title": "nexomis/{{pipeline name}} pipeline parameters",
     "description": "{{pipeline description}}",
     "type": "object",
-    "definitions": {
+    "$defs": {
         "input_output_options": {
             "title": "Input/Output options",
             "type": "object",
-            "description": "Define the input and output options for the pipeline",
-            "required": ["out_dir"],
+            "description": "Define the input for the pipeline",
+            "required": ["input"],
             "properties": {
-                "out_dir": {
+                "input": {
                     "type": "string",
-                    "description": "The output directory where the results will be saved",
+                    "description": "The input directory",
                     "help_text": "This parameter is required and must be specified"
                 }
             }
@@ -58,11 +58,7 @@
         }
     },
     "allOf": [
-        {
-            "$ref": "#/definitions/input_output_options"
-        },
-        {
-            "$ref": "#/definitions/resources_options"
-        }
+        { "$ref": "#/$defs/input_output_options" },
+        { "$ref": "#/$defs/resources_options" }
     ]
 }
