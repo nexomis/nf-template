@@ -13,6 +13,8 @@ jobs:
     steps:
       - name: Check out pipeline code
         uses: actions/checkout@v5
+        with:
+          submodules: recursive
       
       - name: Install Nextflow
         uses: nf-core/setup-nextflow@v2.0.0
