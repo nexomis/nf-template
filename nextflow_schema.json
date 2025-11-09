@@ -1,8 +1,5 @@
 {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "$id": "https://raw.githubusercontent.com/nexomis/{{pipeline name}}/master/nextflow_schema.json",
-    "title": "nexomis/{{pipeline name}} pipeline parameters",
-    "description": "{{pipeline description}}",
     "type": "object",
     "$defs": {
         "input_output_options": {
@@ -13,52 +10,27 @@
             "properties": {
                 "input": {
                     "type": "string",
-                    "description": "The input directory",
+                    "format": "file-path",
+                    "schema": "assets/samplesheet_schema.json",
+                    "mimetype": "text/csv",
+                    "description": "Path to samplesheet CSV with sample information",
                     "help_text": "This parameter is required and must be specified"
-                }
-            }
-        },
-        "resources_options": {
-            "title": "Resources options",
-            "type": "object",
-            "description": "Define The default resources for nextflow",
-            "required": [],
-            "properties": {
-                "ncpus_low": {
-                    "type": "integer",
-                    "default": 4,
-                    "description": "Number of cpu for low process."
                 },
-                "ncpus_med": {
-                    "type": "integer",
-                    "default": 8,
-                    "description": "Number of cpu for medium process."
+                "output_format": {
+                    "type": "string",
+                    "default": "pdf",
+                    "description": "Output format for final documents",
+                    "enum": ["pdf", "rtf", "docx", "html"]
                 },
-                "ncpus_high": {
-                    "type": "integer",
-                    "default": 16,
-                    "description": "Number of cpu for high process."
-                },
-                "mem_low": {
-                    "type": "integer",
-                    "default": 15,
-                    "description": "Memory for low process."
-                },
-                "mem_med": {
-                    "type": "integer",
-                    "default": 30,
-                    "description": "Memory for med process"
-                },
-                "mem_high": {
-                    "type": "integer",
-                    "default": 120,
-                    "description": "Memory for high process (eg. 'samtools sort', 'bowtie2', ...)."
+                "keep_markdown": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Whether to keep intermediate markdown files"
                 }
             }
         }
     },
     "allOf": [
-        { "$ref": "#/$defs/input_output_options" },
-        { "$ref": "#/$defs/resources_options" }
+        { "$ref": "#/$defs/input_output_options" }
     ]
 }

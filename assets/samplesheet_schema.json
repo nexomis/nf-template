@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/nexomis/nf-template/main/assets/samplesheet_schema.json",
+  "title": "Tutorial Samplesheet Schema",
+  "description": "Schema for the tutorial samplesheet file",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": ["sample"],
+    "properties": {
+      "sample": {
+        "type": "string",
+        "pattern": "^\\S+$",
+        "errorMessage": "Sample name must be provided and cannot contain spaces",
+        "meta": ["id"]
+      },
+      "title": {
+        "type": "string",
+        "errorMessage": "Title must be a string (e.g., 'Mr', 'Ms', 'Dr')",
+        "meta": ["title"],
+        "default": "Mr/Ms"
+      },
+      "level": {
+        "type": "string",
+        "enum": ["beginner", "intermediate", "advanced"],
+        "errorMessage": "Level must be one of: beginner, intermediate, advanced",
+        "meta": ["level"],
+        "default": "beginner"
+      }
+    }
+  }
+}

@@ -3,5 +3,7 @@
   "nextflow.formatting.harshilAlignment": true,
   "nextflow.formatting.maheshForm": true,
   "nextflow.formatting.sortDeclarations": true,
-  "nextflow.languageVersion": "25.10"
+  "nextflow.languageVersion": "25.10",
+  "nextflow.completion.extended": true,
+  "nextflow.typeChecking": true
 }

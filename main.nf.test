@@ -1,0 +1,53 @@
+nextflow_pipeline {
+
+    name "Test complete tutorial workflow"
+    script "main.nf"
+
+    test("Should generate greeting documents for all samples") {
+
+        when {
+            params {
+                input = "${projectDir}/tests/data/samplesheet.csv"
+                keep_markdown = true
+                output_format = "pdf"
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert workflow.trace.tasks().size() == 6  // 3 samples × 2 processes
+            
+            // Check that all expected outputs exist
+            def samples = ['Alice', 'Bob', 'Charlie']
+            samples.each { sample ->
+                // Check markdown files
+                assert path("${launchDir}/results/intermediate/markdown/${sample}.md").exists()
+                // Check final documents
+                assert path("${launchDir}/results/final/${sample}.pdf").exists()
+            }            
+        }
+
+    }
+
+    test("Should generate RTF documents when specified") {
+
+        when {
+            params {
+                input = "${projectDir}/tests/data/samplesheet.csv"
+                output_format = "rtf"
+            }
+        }
+
+        then {
+            assert workflow.success
+            
+            // Check that RTF files are created
+            def samples = ['Alice', 'Bob', 'Charlie']
+            samples.each { sample ->
+                assert path("${launchDir}/results/final/${sample}.rtf").exists()
+            }
+        }
+
+    }
+
+}

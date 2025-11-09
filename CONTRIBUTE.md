@@ -14,15 +14,13 @@ Objectives:
 <workflow_name>/
 ├── bin/                         (*)
 │   └── <custom_script>.py       (*)
+├── assets/                      (*)
+│   └── input_schema.json        (*)
 ├── conf/                        (*)
 │   ├── ext.config               (*)
 │   └── resources.config         (*)
-├── assets/                      (*)
-│   └── input_schema.json        (*)
 ├── modules/
 │   ├── config/
-│   │   ├── process/
-│   │   │   └── labels.config
 │   │   ├── pipeline_info.config
 │   │   └── profiles.config
 │   ├── process/
@@ -35,14 +33,17 @@ Objectives:
 │           └── main.nf
 ├── process/                     (*)
 ├── subworkflow/                 (*)
-├── data/
-│   ├── test/
-│   │   ├── inputs/
-│   │   │   └── get_test_data.sh (*)
-│   │   └── test.yml
-├── nextflow.config
+├── tests/
+│   ├── data/
+│   │   └── samplesheet.csv
+│   └── nextflow.config          (*)
+├── main.nf
+├── main.nf.test
 ├── nextflow_schema.json
-└── README.md
+├── nextflow.config
+├── nf-test.config
+├── README.md
+└── RESOURCES.md
 
   '(*)' : optional
 ```
@@ -198,6 +199,7 @@ joinInputForK2i1 = inputReads.join(inputK2i1, by:0)
   | unique { it[0] }
   | set {inputReadsFromK1}
 ```
+
 ## 5. Typography Conventions
 
 - Channel Instances: `lowerCamelCase`
@@ -279,12 +281,89 @@ output {
 
 ## 8. Testing
 
-- Provide tests that can be executed with:
-```
-nextflow run . -params-file data/test/test.yml
+- Use **nf-test** framework for testing Nextflow pipelines
+- Tests can be executed with:
+```bash
+nf-test test
 ```
 
-- Set up testing parameters in `data/test/test.yml`
-- Provide testing inputs in `data/test/inputs/`
-  - Optionally, include a script to download input test data (e.g., `get_test_data.sh`).
-- Test outputs shall be found in the directory specified by `out_dir: data/test/out_dir` parameter specified in `data/test/test.yml`.
+### 8.1 Configuration
+
+- Adapt `nf-test.config` at the project root to configure nf-test:
+
+**Example:**
+```groovy
+config {
+    testsDir "tests"
+    workDir System.getenv("NFT_WORKDIR") ?: ".nf-test"
+    profile "apptainer"
+    
+    options {
+        relativeSnapshots true
+    }
+}
+```
+
+### 8.2 Test Files
+
+- Create test files alongside your workflow files with `.nf.test` extension (e.g., `main.nf.test`)
+- Use nf-test DSL to define test cases:
+
+**Example:**
+```groovy
+nextflow_pipeline {
+    name "Test workflow"
+    script "main.nf"
+
+    test("Should process all samples successfully") {
+        when {
+            params {
+                input = "${projectDir}/tests/data/samplesheet.csv"
+                output_format = "pdf"
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert workflow.trace.tasks().size() == expectedTaskCount
+            
+            // Verify expected outputs exist
+            assert path("${launchDir}/results/output.pdf").exists()
+        }
+    }
+}
+```
+
+### 8.3 Test Data and Configuration
+
+- Place test input data in `tests/data/` directory
+- Optionally create `tests/nextflow.config` for test-specific configuration:
+
+**Example:**
+```groovy
+outputDir = "results"
+```
+
+### 8.4 Test Assertions
+
+- Use assertions to validate workflow execution:
+  - `workflow.success` - Check if workflow completed successfully
+  - `workflow.trace.tasks().size()` - Verify expected number of tasks
+  - `path().exists()` - Verify output files exist
+  - Snapshot testing for reproducibility
+
+### 8.5 Running Tests
+
+```bash
+# Run all tests
+nf-test test
+
+# Run specific test file
+nf-test test main.nf.test
+
+# Run with specific profile
+nf-test test --profile docker
+
+# Update snapshots
+nf-test test --update-snapshot
+```
