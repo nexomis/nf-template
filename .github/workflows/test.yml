@@ -31,4 +31,4 @@ jobs:
           apptainer-version: 1.4.4
 
       - name: Run nf-test
-        run: nf-test test main.nf.test
+        run: nf-test test

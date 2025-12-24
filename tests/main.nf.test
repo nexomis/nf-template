@@ -1,6 +1,6 @@
 nextflow_pipeline {
 
-    name "Test complete tutorial workflow"
+    name "Testing the template pipeline"
     script "main.nf"
 
     test("Should generate greeting documents for all samples") {
